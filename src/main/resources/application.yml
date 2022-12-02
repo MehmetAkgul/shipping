@@ -5,13 +5,13 @@ server:
     include-stacktrace: never
   port: 8080
   servlet:
-    context-path: /library/api
+    context-path: /shipping/api
 
 
 spring:
   datasource:
     password: 1234
-    url: jdbc:postgresql://localhost:5432/library
+    url: jdbc:postgresql://localhost:5432/shipping
     username: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -39,12 +39,12 @@ spring:
 
 backendapi:
   app:
-    jwtSecret: librarySecretKey
+    jwtSecret: shippingSecretKey
     jwtExpirationMs: 86400000
 
 logging:
   file:
-    name: logs/library.log
+    name: logs/shipping.log
   pattern:
     file: "%d %-5level [%thread] %logger:%msg%n"
   level:
