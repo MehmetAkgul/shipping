@@ -1,11 +1,15 @@
-package com.backend.shipping.domain;
+package com.backend.shipping.dto;
 
-import com.backend.shipping.dto.PointDto;
+import com.backend.shipping.domain.Branch;
+import com.backend.shipping.domain.Point;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -13,13 +17,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @NoArgsConstructor
-@Entity
-@Table(name = "points")
-public class Point implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class PointDto implements Serializable {
 
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -78,19 +76,18 @@ public class Point implements Serializable {
     @Column(nullable = false)
     private boolean builtIn = false;
 
-    public Point(PointDto dataDto) {
-        this.setName(dataDto.getName());
-        this.setResponsibleBranch(dataDto.getResponsibleBranch());
-        this.setCountry(dataDto.getCountry());
-        this.setProvince(dataDto.getProvince());
-        this.setDistrict(dataDto.getDistrict());
-        this.setNeighbourhood(dataDto.getNeighbourhood());
-        this.setSubdistrict(dataDto.getSubdistrict());
-        this.setVillage(dataDto.getVillage());
-        this.setStreet(dataDto.getStreet());
-        this.setSite(dataDto.getSite());
-        this.setNumber(dataDto.getNumber());
-        this.setAnnotation(dataDto.getAnnotation());
-        this.setZipCode(dataDto.getZipCode());
+    public PointDto(Point data) {
+        this.setName(data.getName());
+        this.setResponsibleBranch(data.getResponsibleBranch());
+        this.setCountry(data.getCountry());
+        this.setProvince(data.getProvince());
+        this.setNeighbourhood(data.getNeighbourhood());
+        this.setSubdistrict(data.getSubdistrict());
+        this.setVillage(data.getVillage());
+        this.setStreet(data.getStreet());
+        this.setSite(data.getSite());
+        this.setNumber(data.getNumber());
+        this.setAnnotation(data.getAnnotation());
+        this.setZipCode(data.getZipCode());
     }
 }
