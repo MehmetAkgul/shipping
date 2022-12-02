@@ -1,8 +1,8 @@
 package com.backend.shipping.security.config;
 
-import com.backend.library.security.jwt.AuthEntryPointJwt;
-import com.backend.library.security.jwt.AuthTokenFilter;
-import com.backend.library.security.service.UserDetailsServiceImpl;
+import com.backend.shipping.security.jwt.AuthEntryPointJwt;
+import com.backend.shipping.security.jwt.AuthTokenFilter;
+import com.backend.shipping.security.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

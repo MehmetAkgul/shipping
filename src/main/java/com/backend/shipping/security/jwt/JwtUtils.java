@@ -1,7 +1,7 @@
 package com.backend.shipping.security.jwt;
 
-import com.backend.library.security.service.UserDetailsImpl;
-import io.jsonwebtoken.*;
+  import com.backend.shipping.security.service.UserDetailsImpl;
+  import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

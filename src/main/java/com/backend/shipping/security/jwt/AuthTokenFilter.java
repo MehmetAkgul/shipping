@@ -1,8 +1,8 @@
 package com.backend.shipping.security.jwt;
 
-import com.backend.library.domain.User;
-import com.backend.library.repository.UserRepository;
-import com.backend.library.security.service.UserDetailsServiceImpl;
+import com.backend.shipping.domain.User;
+import com.backend.shipping.repository.UserRepository;
+import com.backend.shipping.security.service.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
             return headerAuth.substring(7);
         }
-
         return null;
     }
 }
