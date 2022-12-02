@@ -1,5 +1,6 @@
 package com.backend.shipping.domain;
 
+import com.backend.shipping.domain.enumeration.UserRole;
 import com.backend.shipping.dto.UserDtoForAdmin;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,8 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Setter
@@ -27,9 +30,11 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne ( )
-    @JoinColumn(name = "role_id")
-     private Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @Size(min = 2, max = 30)
     @NotNull(message = "Please enter your first name. Min 2 and max 30 char")
@@ -61,13 +66,14 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true, length = 80)
     private String email;
 
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate = LocalDateTime.now();
 
     @Column(nullable = false)
     private Boolean builtIn=false;
 
-    public User(UserDtoForAdmin userDto) {
-        this.role=userDto.getRole();
+    public User(UserDtoForAdmin userDto, Set<Role> roles) {
+        this.roles = roles;
         this.firstName=userDto.getFirstName();
         this.lastName=userDto.getLastName();
         this.password=userDto.getPassword();
@@ -79,6 +85,23 @@ public class User implements Serializable {
     public String getFullName() {
         return firstName + " " + lastName;
     }
+    public Set<Role> getRole() {
+        return roles;
+    }
 
+    public Set<String> getRoles() {
+        Set<String> roles1 = new HashSet<>();
+        Role[] role = roles.toArray(new Role[roles.size()]);
+
+        for (int i = 0; i < roles.size(); i++) {
+            if (role[i].getName().equals(UserRole.ROLE_ADMIN))
+                roles1.add("Administrator");
+            else if (role[i].getName().equals(UserRole.ROLE_STAFF))
+                roles1.add("Employee");
+            else if (role[i].getName().equals(UserRole.ROLE_DISPATCHER))
+                roles1.add("Dispatcher");
+        }
+        return roles1;
+    }
 
 }

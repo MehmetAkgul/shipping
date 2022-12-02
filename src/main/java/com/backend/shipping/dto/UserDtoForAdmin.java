@@ -1,5 +1,6 @@
-package com.backend.library.dto;
+package com.backend.shipping.dto;
 
+import com.backend.shipping.domain.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

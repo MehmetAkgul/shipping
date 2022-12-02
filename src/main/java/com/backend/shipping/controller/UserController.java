@@ -1,14 +1,9 @@
-package com.backend.library.controller;
+package com.backend.shipping.controller;
 
-
-import com.backend.library.domain.User;
-import com.backend.library.dto.UserDtoForAdmin;
-import com.backend.library.dto.LoanDtoForMember;
-import com.backend.library.dto.UserDto;
-import com.backend.library.dto.UserDtoForGet;
-import com.backend.library.security.jwt.JwtUtils;
-import com.backend.library.service.LoanService;
-import com.backend.library.service.UserService;
+import com.backend.shipping.dto.UserDtoForAdmin;
+import com.backend.shipping.dto.UserDtoForGet;
+import com.backend.shipping.security.jwt.JwtUtils;
+import com.backend.shipping.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,13 +34,11 @@ import java.util.Objects;
 public class UserController {
 
     public UserService userService;
-    public LoanService loanService;
     public AuthenticationManager authenticationManager;
     public JwtUtils jwtUtils;
 
-
     @PostMapping("/signin")
-    public ResponseEntity<Map<String, String>> authenticateUser(
+     public ResponseEntity<Map<String, String>> authenticateUser(
             @RequestBody
             Map<String, Object> userMap
     ) {
@@ -67,22 +60,30 @@ public class UserController {
      * It will return the created user object.
      * Default role is member.
      */
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Boolean>> registerUser(
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Boolean>> createUser(
             @Valid @RequestBody
-            User user
+            UserDtoForAdmin user
     ) {
-        userService.register(user);
+        userService.create(user);
         Map<String, Boolean> map = new HashMap<>();
         map.put("User registered successfully!", true);
         return new ResponseEntity<>(map, HttpStatus.CREATED);
+    }
+    //users/4
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDtoForGet> getUserById(@PathVariable Long id) {
+        UserDtoForGet user = userService.findById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
      * It will return the authenticated user object
      */
     @GetMapping("/user")
-    @PreAuthorize("hasRole('MEMBER') or hasRole('STAFF') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('WORKER') or hasRole('DISPATCHER')")
     public ResponseEntity<UserDtoForGet> getUserById(
             HttpServletRequest request
     ) {
@@ -92,61 +93,40 @@ public class UserController {
     }
 
     /**
-     * It will return the authenticated  user object.
-     * it should return the corresponding book object in response.
-     * /user/loans?page=1&size=10&sort=createDate&type=desc
+     * It will return the authenticated user object
      */
-    @GetMapping("/user/loans")
-    @PreAuthorize("hasRole('MEMBER') or hasRole('STAFF') or hasRole('ADMIN')")
-    public ResponseEntity<Page<LoanDtoForMember>> getUserLoansById(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size,
-            @RequestParam(value = "sort", defaultValue = "createDate") String sort,
-            @RequestParam(value = "type", defaultValue = "desc") String type,
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('WORKER') or hasRole('DISPATCHER')")
+    public ResponseEntity<UserDtoForGet> getUserById(
             HttpServletRequest request
     ) {
         Long id = (Long) request.getAttribute("id");
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-        if (Objects.equals(type, "desc")) pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-        Page<LoanDtoForMember> loanPageByUser = loanService.findByUserIdWithLoans(id, pageable);
-        return new ResponseEntity<>(loanPageByUser, HttpStatus.OK);
-    }
-//
-//    //users
-//    @GetMapping()
-//    @PreAuthorize(" hasRole('STAFF') or hasRole('ADMIN')")
-//    public ResponseEntity<UserDto> getUser(
-//            HttpServletRequest request
-//    ) {
-//        Long id = (Long) request.getAttribute("id");
-//        UserDto userDto = userService.findById(id);
-//        return new ResponseEntity<>(userDto, HttpStatus.OK);
-//    }
-
-    //users/4
-    @GetMapping("/user/{id}")
-    @PreAuthorize("  hasRole('STAFF') or hasRole('ADMIN')")
-    public ResponseEntity<UserDtoForGet> getUserById(@PathVariable Long id) {
         UserDtoForGet user = userService.findById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     /**
-     * It will return the created user object.
-     * An admin can create any type of user, while an employee can create only member-type users.
+     * page: active page number (optional, default: 0)
+     * size: record count in a page (optional, default: 20)
+     * sort : sort field name (optional, default: name)
+     * type: sorting type (optional, default: asc)
      */
-    //users/4
-    @PostMapping("/user")
-    @PreAuthorize("  hasRole('STAFF') or hasRole('ADMIN') ")
-    public ResponseEntity<Map<String, Boolean>> createNewUserByEmployeeOrAdmin(
-            @Valid @RequestBody
-            UserDto user
+    //users?page=1&size=10&sort=name&type=asc
+    @GetMapping()
+    public ResponseEntity<Page<UserDtoForGet>> search(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") int size,
+            @RequestParam(value = "sort") String sort,
+            @RequestParam(value = "type") String type
     ) {
-        userService.create(user);
-        Map<String, Boolean> map = new HashMap<>();
-        map.put("User registered successfully!", true);
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+        if (Objects.equals(type, "desc"))
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+
+        Page<UserDtoForGet> author = userService.findAll(pageable);
+        return new ResponseEntity<>(author, HttpStatus.OK);
     }
+
 
     /**
      * It will return the updated user object.
@@ -154,14 +134,28 @@ public class UserController {
      */
     //users/4
     @PutMapping("/user/{id}")
-    @PreAuthorize("  hasRole('STAFF') or hasRole('ADMIN')")
-    public ResponseEntity<Map<String, Boolean>> updateUserByEmployeeOrAdmin(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Boolean>> updateUserByAdmin(
             @PathVariable
             Long id,
-         @RequestBody
-         UserDtoForAdmin userDtoForAdmin
+            @RequestBody
+            UserDtoForAdmin userDtoForAdmin
     ) {
-        userService.updateUserByEmployeeOrAdmin(id, userDtoForAdmin);
+        userService.updateUser(id, userDtoForAdmin);
+        Map<String, Boolean> map = new HashMap<>();
+        map.put("success", true);
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PutMapping("/change-password/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, Boolean>> updateUserPassword(
+            @PathVariable
+            Long id,
+            String newPassword,
+            String oldPassword
+    ) {
+        userService.updatePassword(id, newPassword,oldPassword);
         Map<String, Boolean> map = new HashMap<>();
         map.put("success", true);
         return new ResponseEntity<>(map, HttpStatus.OK);
@@ -169,7 +163,7 @@ public class UserController {
 
     //users/4
     @DeleteMapping("/user/{id}")
-    @PreAuthorize("  hasRole('STAFF') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') ")
     public ResponseEntity<Map<String, Boolean>> deleteUserByAdmin(
             @PathVariable Long id
     ) {
