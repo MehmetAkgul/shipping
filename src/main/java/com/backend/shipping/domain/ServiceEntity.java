@@ -1,6 +1,7 @@
 package com.backend.shipping.domain;
 
 
+import com.backend.shipping.dto.ServiceEntityDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,17 +17,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "units")
-public class Unit implements Serializable {
+@Table(name = "services")
+public class ServiceEntity implements Serializable {
     /**
-     * The unit table is the table where the types of shipments such as file, mi, package, parcel to be sent are kept.
+     * It is the table in which the services provided by the company are defined. Delivery of cargo status via SMS, branch delivery, delivery to address.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(min = 2, max = 30)
-    @NotNull(message = "Please enter unit name. Min 2 and max 30 char")
+    @NotNull(message = "Please enter service name. Min 2 and max 30 char")
     @Column(nullable = false, length = 30)
     private String name;
 
@@ -36,15 +37,10 @@ public class Unit implements Serializable {
     private String description;
 
 
-    @NotNull(message = "Please enter Unit width.")
-    private Integer width;
-    @NotNull(message = "Please enter Unit length.")
-    private Integer length;
-    @NotNull(message = "Please enter Unit height.")
-    private Integer height;
-
-    private Integer desi;
-
     private boolean active = true;
 
+    public ServiceEntity(ServiceEntityDto dataDto) {
+        this.setName(dataDto.getName());
+        this.setDescription(dataDto.getDescription());
+    }
 }
