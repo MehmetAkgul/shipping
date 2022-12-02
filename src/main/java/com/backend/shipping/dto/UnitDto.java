@@ -1,31 +1,22 @@
-package com.backend.shipping.domain;
+package com.backend.shipping.dto;
 
 
-import com.backend.shipping.dto.UnitDto;
+import com.backend.shipping.domain.Unit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "units")
-public class Unit implements Serializable {
-    /**
-     * The unit table is the table where the types of shipments such as file, mi, package, parcel to be sent are kept.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UnitDto implements Serializable {
 
     @Size(min = 2, max = 30)
     @NotNull(message = "Please enter unit name. Min 2 and max 30 char")
@@ -36,7 +27,6 @@ public class Unit implements Serializable {
     @NotNull(message = "Please enter description. Min 2 and max 80 char")
     @Column(nullable = false, length = 80)
     private String description;
-
 
     @NotNull(message = "Please enter Unit width.")
     private Integer width;
@@ -49,13 +39,12 @@ public class Unit implements Serializable {
 
     private boolean active = true;
 
-    public Unit(UnitDto unitDto) {
-        this.setName(unitDto.getName());
-        this.setDescription(unitDto.getDescription());
-        this.setWidth(unitDto.getWidth());
-        this.setLength(unitDto.getLength());
-        this.setHeight(unitDto.getHeight());
-        this.setDesi(unitDto.getDesi());
-
+    public UnitDto(Unit data) {
+        this.setName(data.getName());
+        this.setDescription(data.getDescription());
+        this.setWidth(data.getWidth());
+        this.setLength(data.getLength());
+        this.setHeight(data.getHeight());
+        this.setDesi(data.getDesi());
     }
 }
