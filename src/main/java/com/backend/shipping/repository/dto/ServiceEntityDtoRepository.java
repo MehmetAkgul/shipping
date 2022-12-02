@@ -1,4 +1,4 @@
-package com.backend.shipping.repository;
+package com.backend.shipping.repository.dto;
 
 
 import com.backend.shipping.domain.ServiceEntity;
