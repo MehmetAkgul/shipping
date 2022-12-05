@@ -1,6 +1,6 @@
-package com.backend.shipping.domain;
+package com.backend.shipping.dto;
 
-import com.backend.shipping.dto.CustomerDto;
+import com.backend.shipping.domain.Customer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,19 +19,13 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "customers")
-public class Customer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class CustomerDto {
 
 
     @Size(min = 4, max = 30)
     @NotNull(message = "Please enter your first name. Min 2 char and max 30 char")
     private String firstName;
-
     @Size(min = 2, max = 30)
     @NotNull(message = "Please enter your last name. Min 2 and max 30 char")
     @Column(nullable = false, length = 30)
@@ -60,11 +54,11 @@ public class Customer {
     @Column(nullable = false)
     private Boolean builtIn;
 
-    public Customer(CustomerDto dataDto) {
-        this.setFirstName(dataDto.getFirstName());
-        this.setLastName(dataDto.getLastName());
-        this.setPhoneNumber(dataDto.getPhoneNumber());
-        this.setEmail(dataDto.getEmail());
-        this.setBirthDate(dataDto.getBirthDate());
+    public CustomerDto(Customer data) {
+        this.setFirstName(data.getFirstName());
+        this.setLastName(data.getLastName());
+        this.setPhoneNumber(data.getPhoneNumber());
+        this.setEmail(data.getEmail());
+        this.setBirthDate(data.getBirthDate());
     }
 }
