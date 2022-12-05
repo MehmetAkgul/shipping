@@ -6,8 +6,7 @@ import com.backend.shipping.exception.BadRequestException;
 import com.backend.shipping.exception.ConflictException;
 import com.backend.shipping.exception.ResourceNotFoundException;
 import com.backend.shipping.repository.PointRepository;
-import com.backend.shipping.repository.dto.PointDtoRepository;
-import lombok.AllArgsConstructor;
+ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import javax.validation.Valid;
 @Service
 public class PointService {
     private final PointRepository repository;
-    private final PointDtoRepository dtoRepository;
+
 
     private final static String NAME_IS_ALREADY_USE_MSG = "Error: Unit name is already in use!";
     private final static String ACTIVE_MSG = "Error: If it is active it cannot be deleted!";
@@ -44,7 +43,7 @@ public class PointService {
 
 
     public Page<PointDto> findAll(Pageable pageable) {
-        return dtoRepository.findAll(pageable);
+        return repository.findAllForDto(pageable);
     }
 
     public void update(Long id, PointDto data) {
