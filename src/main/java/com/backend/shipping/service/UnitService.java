@@ -5,7 +5,7 @@ import com.backend.shipping.dto.UnitDto;
 import com.backend.shipping.exception.BadRequestException;
 import com.backend.shipping.exception.ConflictException;
 import com.backend.shipping.exception.ResourceNotFoundException;
-import com.backend.shipping.repository.UnitDtoRepository;
+//import com.backend.shipping.repository.dto.UnitDtoRepository;
 import com.backend.shipping.repository.UnitRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,6 @@ import javax.validation.Valid;
 @Service
 public class UnitService {
     private final UnitRepository repository;
-    private final UnitDtoRepository dtoRepository;
 
 
     private final static String NAME_IS_ALREADY_USE_MSG = "Error: Unit name is already in use!";
@@ -48,7 +47,7 @@ public class UnitService {
 
 
     public Page<UnitDto> findAll(Pageable pageable) {
-        return dtoRepository.findAll(pageable);
+        return repository.findAllForDto(pageable);
     }
 
     public void update(Long id, UnitDto data) {
