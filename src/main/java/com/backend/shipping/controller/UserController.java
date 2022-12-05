@@ -82,28 +82,16 @@ public class UserController {
     /**
      * It will return the authenticated user object
      */
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('WORKER') or hasRole('DISPATCHER')")
-    public ResponseEntity<UserDtoForGet> getUserById(
-            HttpServletRequest request
-    ) {
-        Long id = (Long) request.getAttribute("id");
-        UserDtoForGet user = userService.findById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
+//    @GetMapping("/user")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('WORKER') or hasRole('DISPATCHER')")
+//    public ResponseEntity<UserDtoForGet> getUserById(
+//            HttpServletRequest request
+//    ) {
+//        Long id = (Long) request.getAttribute("id");
+//        UserDtoForGet user = userService.findById(id);
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+//    }
 
-    /**
-     * It will return the authenticated user object
-     */
-    @GetMapping("/users")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('WORKER') or hasRole('DISPATCHER')")
-    public ResponseEntity<UserDtoForGet> getUserById(
-            HttpServletRequest request
-    ) {
-        Long id = (Long) request.getAttribute("id");
-        UserDtoForGet user = userService.findById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 
     /**
      * page: active page number (optional, default: 0)
@@ -112,8 +100,8 @@ public class UserController {
      * type: sorting type (optional, default: asc)
      */
     //users?page=1&size=10&sort=name&type=asc
-    @GetMapping()
-    public ResponseEntity<Page<UserDtoForGet>> search(
+    @GetMapping("/user/all")
+    public ResponseEntity<Page<UserDtoForGet>> all(
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
             @RequestParam(value = "sort") String sort,

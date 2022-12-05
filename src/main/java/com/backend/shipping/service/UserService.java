@@ -10,8 +10,7 @@ import com.backend.shipping.exception.BadRequestException;
 import com.backend.shipping.exception.ConflictException;
 import com.backend.shipping.exception.ResourceNotFoundException;
 import com.backend.shipping.repository.RoleRepository;
-import com.backend.shipping.repository.UserDtoRepository;
-import com.backend.shipping.repository.UserRepository;
+ import com.backend.shipping.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,7 @@ import java.util.HashSet;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final UserDtoRepository userDtoRepository;
+   // private final UserDtoRepository userDtoRepository;
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -170,6 +169,6 @@ public class UserService {
     }
 
     public Page<UserDtoForGet> findAll(Pageable pageable) throws ResourceNotFoundException  {
-        return userDtoRepository.findAll(pageable);
+        return userRepository.findAllForDto(pageable);
     }
 }

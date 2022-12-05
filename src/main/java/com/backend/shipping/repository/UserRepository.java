@@ -26,4 +26,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
 
+
+    @Transactional
+    @Query("select new com.backend.shipping.dto.UserDtoForGet(u) from User u"  )
+    Page<UserDtoForGet> findAllForDto(Pageable pageable);
 }
