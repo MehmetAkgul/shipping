@@ -1,15 +1,11 @@
 package com.backend.shipping.service;
 
 import com.backend.shipping.domain.ServiceEntity;
-import com.backend.shipping.domain.Unit;
 import com.backend.shipping.dto.ServiceEntityDto;
-import com.backend.shipping.dto.UnitDto;
 import com.backend.shipping.exception.BadRequestException;
 import com.backend.shipping.exception.ConflictException;
 import com.backend.shipping.exception.ResourceNotFoundException;
-import com.backend.shipping.repository.ServiceEntityDtoRepository;
-import com.backend.shipping.repository.ServiceEntityRepository;
-import com.backend.shipping.repository.UnitDtoRepository;
+ import com.backend.shipping.repository.ServiceEntityRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +17,6 @@ import javax.validation.Valid;
 @Service
 public class ServiceEntityService {
     private final ServiceEntityRepository repository;
-    private final ServiceEntityDtoRepository dtoRepository;
 
     private final static String NAME_IS_ALREADY_USE_MSG = "Error: Unit name is already in use!";
     private final static String ACTIVE_MSG = "Error: If it is active it cannot be deleted!";
@@ -46,9 +41,11 @@ public class ServiceEntityService {
     }
 
 
+
     public Page<ServiceEntityDto> findAll(Pageable pageable) {
-        return dtoRepository.findAll(pageable);
+        return repository.findAllForDto(pageable);
     }
+
 
     public void update(Long id, ServiceEntityDto data) {
         ServiceEntity dataDetail = repository.findById(id).orElseThrow(

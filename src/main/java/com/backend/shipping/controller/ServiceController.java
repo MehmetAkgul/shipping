@@ -59,8 +59,8 @@ public class ServiceController {
      * type: sorting type (optional, default: asc)
      */
     //users?page=1&size=10&sort=name&type=asc
-    @GetMapping("/")
-    public ResponseEntity<Page<ServiceEntityDto>> search(
+    @GetMapping("/all")
+    public ResponseEntity<Page<ServiceEntityDto>> all(
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,
             @RequestParam(value = "sort") String sort,
